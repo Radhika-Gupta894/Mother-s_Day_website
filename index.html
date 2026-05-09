@@ -152,17 +152,17 @@
 
         // Assets (using relative paths)
         const ASSETS = {
-            mother: 'mother_me.jpeg',
-            teddy: 'cute_teddy_bear.png',
-            rose: 'magical_rose.png'
+            mother: 'photo/mother_me.jpeg',
+            teddy: 'photo/cute_teddy_bear.jpg',
+            rose: 'photo/magical_rose.jpg'
         };
 
         // YOUR MEMORIES - Add your photo filenames here!
         const MEMORIES = [
-            { img: 'mother_me.png', caption: 'Special Moment ❤️', rotation: -3 },
-            { img: 'memory1.jpg', caption: '❤️', rotation: 5 },
-            { img: 'memory2.jpg', caption: '🥰', rotation: -2 },
-            { img: 'memory3.jpg', caption: '💖', rotation: 4 }
+            { img: 'photo/mother_me.jpeg', caption: 'Special Moment ❤️', rotation: -3 },
+            { img: 'photo/photo1.jpeg', caption: '❤️', rotation: 5 },
+            { img: 'photo/photo2.jpeg', caption: '🥰', rotation: -2 },
+            { img: 'photo/photo3.jpeg', caption: '💖', rotation: 4 }
         ];
 
         const FloatingElements = () => {
@@ -327,7 +327,7 @@
 
                     {/* Audio Placeholder */}
                     <audio ref={audioRef} loop>
-                        <source src="tu_hain_toh_female.mp3" type="audio/mpeg" />
+                        <source src="tu_hain_toh_female%20(1).mp3" type="audio/mpeg" />
                     </audio>
 
                     {/* Navigation / Controls */}
@@ -391,7 +391,13 @@
                         </motion.div>
 
                         <motion.button
-                            onClick={() => setShowSurprise(true)}
+                            onClick={() => {
+                                setShowSurprise(true);
+                                if (isMuted && audioRef.current) {
+                                    audioRef.current.play();
+                                    setIsMuted(false);
+                                }
+                            }}
                             whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,105,180,0.5)" }}
                             whileTap={{ scale: 0.95 }}
                             className="mt-16 px-8 py-4 bg-pink-500 text-white rounded-full font-bold text-lg shadow-lg flex items-center gap-2 group transition-all"
