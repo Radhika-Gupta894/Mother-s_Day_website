@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Mother's Day Mom ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-soft: #FFD1DC;
+            --lavender: #E6E6FA;
+            --peach: #FFDAB9;
+            --baby-blue: #B0E0E6;
+            --cream: #FFFDD0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #FFD1DC, #E6E6FA, #FFDAB9, #B0E0E6);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .font-handwritten {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .dark .glass {
+            background: rgba(30, 30, 40, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.1); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+        }
+
+        .polaroid {
+            background: white;
+            padding: 1rem;
+            padding-bottom: 3rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .sticker {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--cream);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--pink-soft);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        // Assets (using relative paths)
+        const ASSETS = {
+            mother: 'file:///c:/Users/shali/OneDrive/Documents/oneDrive/Pictures/personal/WhatsApp%20Image%202026-05-09%20at%2010.36.57%20AM.jpeg', 
+            teddy: 'cute_teddy_bear.png',
+            rose: 'magical_rose.png'
+        };
+
+        // YOUR MEMORIES - Add your photo filenames here!
+        const MEMORIES = [
+            { img: 'file:///c:/Users/shali/OneDrive/Documents/oneDrive/Pictures/personal/WhatsApp%20Image%202026-05-09%20at%2010.36.57%20AM.jpeg', caption: 'Special Moment ❤️', rotation: -3 },
+            { img: 'file:///c:/Users/shali/OneDrive/Documents/oneDrive/Pictures/personal/WhatsApp%20Image%202026-05-08%20at%207.17.12%20PM.jpeg', caption: '❤️', rotation: 5 },
+            { img: 'file:///c:/Users/shali/OneDrive/Documents/oneDrive/Pictures/personal/WhatsApp%20Image%202026-05-08%20at%208.44.55%20PM.jpeg', caption: '🥰', rotation: -2 },
+            { img: 'file:///c:/Users/shali/OneDrive/Documents/oneDrive/Pictures/personal/WhatsApp%20Image%202026-05-08.jpeg', caption: '💖', rotation: 4 }
+        ];
+
+        const FloatingElements = () => {
+            const elements = Array.from({ length: 20 });
+            return (
+                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                    {elements.map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute text-pink-400 opacity-20"
+                            initial={{ 
+                                x: Math.random() * window.innerWidth, 
+                                y: window.innerHeight + 100,
+                                scale: Math.random() * 0.5 + 0.5,
+                                rotate: Math.random() * 360
+                            }}
+                            animate={{ 
+                                y: -100,
+                                rotate: 360,
+                                x: `+=${Math.random() * 100 - 50}`
+                            }}
+                            transition={{ 
+                                duration: Math.random() * 10 + 10, 
+                                repeat: Infinity, 
+                                ease: "linear" 
+                            }}
+                        >
+                            {i % 2 === 0 ? '❤️' : '🌸'}
+                        </motion.div>
+                    ))}
+                </div>
+            );
+        };
+
+        const TypingText = ({ texts }) => {
+            const [currentText, setCurrentText] = useState("");
+            const [index, setIndex] = useState(0);
+            const [charIndex, setCharIndex] = useState(0);
+            const [isDeleting, setIsDeleting] = useState(false);
+
+            useEffect(() => {
+                const timeout = setTimeout(() => {
+                    const currentFullText = texts[index];
+                    
+                    if (!isDeleting) {
+                        setCurrentText(currentFullText.substring(0, charIndex + 1));
+                        setCharIndex(prev => prev + 1);
+                        
+                        if (charIndex === currentFullText.length) {
+                            setTimeout(() => setIsDeleting(true), 2000);
+                        }
+                    } else {
+                        setCurrentText(currentFullText.substring(0, charIndex - 1));
+                        setCharIndex(prev => prev - 1);
+                        
+                        if (charIndex === 0) {
+                            setIsDeleting(false);
+                            setIndex((index + 1) % texts.length);
+                        }
+                    }
+                }, isDeleting ? 50 : 100);
+                
+                return () => clearTimeout(timeout);
+            }, [charIndex, isDeleting, index]);
+
+            return (
+                <div className="h-12 flex items-center justify-center font-handwritten text-2xl text-pink-600 dark:text-pink-300">
+                    {currentText}<span className="animate-pulse">|</span>
+                </div>
+            );
+        };
+
+        const WishCard = ({ wish, index }) => (
+            <motion.div 
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="glass p-6 rounded-3xl text-center flex flex-col items-center gap-4 transition-all"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+            >
+                <div className="text-4xl text-pink-500">💝</div>
+                <p className="text-gray-700 dark:text-gray-200 italic">"{wish}"</p>
+            </motion.div>
+        );
+
+        const MemoryPolaroid = ({ img, caption, rotation }) => (
+            <motion.div 
+                className="polaroid w-64 inline-block m-4 cursor-pointer"
+                style={{ transform: `rotate(${rotation}deg)` }}
+                whileHover={{ rotate: 0, scale: 1.1 }}
+            >
+                <div className="bg-gray-200 w-full aspect-square overflow-hidden mb-4 rounded-sm">
+                    <img src={img} alt="Memory" className="w-full h-full object-cover" />
+                </div>
+                <p className="font-handwritten text-xl text-center text-gray-800">{caption}</p>
+            </motion.div>
+        );
+
+        const App = () => {
+            const [isDarkMode, setIsDarkMode] = useState(false);
+            const [isMuted, setIsMuted] = useState(true);
+            const [showSurprise, setShowSurprise] = useState(false);
+            const audioRef = useRef(null);
+
+            useEffect(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FFD1DC', '#E6E6FA', '#FFDAB9', '#B0E0E6']
+                });
+            }, []);
+
+            const toggleDarkMode = () => {
+                setIsDarkMode(!isDarkMode);
+                document.body.classList.toggle('dark');
+            };
+
+            const toggleMusic = () => {
+                if (isMuted) {
+                    audioRef.current.play();
+                } else {
+                    audioRef.current.pause();
+                }
+                setIsMuted(!isMuted);
+            };
+
+            const wishes = [
+                "Happy Mother’s Day to the woman who does it all!",
+                "You’re my first friend, my best friend, and my forever friend.",
+                "Thank you for being the heart and soul of our family.",
+                "To the world you are a mother, but to our family you are the world.",
+                "Your love is the sunshine that makes my world glow.",
+                "I'm so lucky to have you as my mom.",
+                "Thank you for always believing in me.",
+                "You make every day feel like a warm hug.",
+                "To the queen of my heart, Happy Mother's Day!",
+                "You are the strongest woman I know.",
+                "Thank you for your endless patience and love.",
+                "I love you more than words can say.",
+                "You are my inspiration and my guiding light.",
+                "Happy Mother's Day to the most beautiful woman inside and out.",
+                "Thanks for putting up with me all these years!",
+                "You make the world a better place just by being in it.",
+                "I hope your day is as wonderful as you are.",
+                "Sending you all my love today and every day.",
+                "You're the best mom I could have ever asked for.",
+                "May your day be filled with joy, laughter, and love."
+            ];
+
+            const reasons = [
+                { icon: '❤️', title: 'Unconditional Love', desc: 'Always there with open arms.' },
+                { icon: '✨', title: 'Magic Touch', desc: 'Can fix anything with a smile.' },
+                { icon: '🧁', title: 'Sweetest Soul', desc: 'The kindest person I know.' },
+                { icon: '🌟', title: 'My Hero', desc: 'Stronger than anyone else.' }
+            ];
+
+            return (
+                <div className={`min-h-screen relative overflow-x-hidden ${isDarkMode ? 'dark bg-gray-900 text-white' : 'text-gray-800'}`}>
+                    <FloatingElements />
+                    
+                    {/* Audio Placeholder */}
+                    <audio ref={audioRef} loop>
+                        <source src="file:///c:/Users/shali/Downloads/tu_hain_toh_female.mp3" type="audio/mpeg" />
+                    </audio>
+
+                    {/* Navigation / Controls */}
+                    <nav className="fixed top-6 right-6 z-50 flex gap-4">
+                        <motion.button 
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={toggleMusic}
+                            className="p-3 glass rounded-full text-pink-600"
+                        >
+                            {isMuted ? <i data-lucide="volume-x"></i> : <i data-lucide="volume-2"></i>}
+                        </motion.button>
+                        <motion.button 
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={toggleDarkMode}
+                            className="p-3 glass rounded-full text-pink-600"
+                        >
+                            {isDarkMode ? <i data-lucide="sun"></i> : <i data-lucide="moon"></i>}
+                        </motion.button>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1, type: "spring" }}
+                            className="z-10"
+                        >
+                            <h1 className="text-6xl md:text-8xl font-handwritten text-pink-600 dark:text-pink-400 heartbeat mb-6 drop-shadow-lg">
+                                Happy Mother’s Day Mom ❤️
+                            </h1>
+                            <TypingText texts={[
+                                "You are my sunshine...",
+                                "My guiding light...",
+                                "My favorite person...",
+                                "The best Mom in the world!"
+                            ]} />
+                        </motion.div>
+
+                        {/* Photo Frame */}
+                        <motion.div 
+                            className="mt-12 relative"
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.5, duration: 0.8 }}
+                        >
+                            <div className="glass p-4 rounded-[2rem] relative z-10 shadow-2xl overflow-hidden group">
+                                <motion.img 
+                                    src={ASSETS.mother} 
+                                    alt="Mom" 
+                                    className="w-72 md:w-[28rem] h-auto max-h-[75vh] object-cover rounded-[1.5rem] transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-pink-500/20 to-transparent pointer-events-none"></div>
+                            </div>
+                            
+                            {/* Decorative stickers around frame */}
+                            <img src={ASSETS.teddy} className="sticker w-24 -bottom-10 -left-10 floating" alt="teddy" />
+                            <img src={ASSETS.rose} className="sticker w-24 -top-10 -right-10 floating" style={{ animationDelay: '1s' }} alt="rose" />
+                        </motion.div>
+
+                        <motion.button
+                            onClick={() => setShowSurprise(true)}
+                            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,105,180,0.5)" }}
+                            whileTap={{ scale: 0.95 }}
+                            className="mt-16 px-8 py-4 bg-pink-500 text-white rounded-full font-bold text-lg shadow-lg flex items-center gap-2 group transition-all"
+                        >
+                            Open Your Surprise 🎁
+                        </motion.button>
+                        
+                        <div className="absolute bottom-10 animate-bounce">
+                            <i data-lucide="chevron-down" className="text-pink-400"></i>
+                        </div>
+                    </section>
+
+                    {/* Why My Mom is Special */}
+                    <section className="py-24 px-4 bg-white/30 dark:bg-black/20">
+                        <div className="max-w-6xl mx-auto">
+                            <h2 className="text-4xl md:text-5xl font-handwritten text-center text-pink-600 mb-16">Why My Mom is So Special ✨</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                {reasons.map((item, i) => (
+                                    <motion.div 
+                                        key={i}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: i * 0.1 }}
+                                        className="glass p-8 rounded-3xl text-center hover:bg-white/50 transition-colors"
+                                    >
+                                        <div className="text-5xl mb-4">{item.icon}</div>
+                                        <h3 className="text-xl font-bold mb-2 text-pink-700 dark:text-pink-400">{item.title}</h3>
+                                        <p className="text-gray-600 dark:text-gray-300">{item.desc}</p>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Memory Gallery */}
+                    <section className="py-24 px-4 overflow-hidden">
+                        <h2 className="text-4xl md:text-5xl font-handwritten text-center text-pink-600 mb-16">Our Precious Memories 📸</h2>
+                        <div className="flex flex-wrap justify-center items-center">
+                            {MEMORIES.map((memory, i) => (
+                                <MemoryPolaroid 
+                                    key={i} 
+                                    img={memory.img} 
+                                    caption={memory.caption} 
+                                    rotation={memory.rotation} 
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Timeline Section */}
+                    <section className="py-24 px-4 bg-white/20 dark:bg-black/10">
+                         <h2 className="text-4xl md:text-5xl font-handwritten text-center text-pink-600 mb-16">Our Story 📖</h2>
+                         <div className="max-w-4xl mx-auto relative border-l-4 border-pink-200 ml-6 md:ml-auto">
+                            {[
+                                { year: "Then", title: "My First Steps", text: "You held my hand and taught me how to walk." },
+                                { year: "Growing Up", title: "School Days", text: "Always cheering the loudest for every small win." },
+                                { year: "Now", title: "My Best Friend", text: "Now you're the person I call for everything." }
+                            ].map((item, i) => (
+                                <motion.div 
+                                    key={i}
+                                    initial={{ opacity: 0, x: 50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    className="mb-12 ml-8 relative"
+                                >
+                                    <div className="absolute -left-[42px] top-1 w-6 h-6 bg-pink-500 rounded-full border-4 border-white shadow"></div>
+                                    <span className="text-sm font-bold text-pink-500 uppercase tracking-widest">{item.year}</span>
+                                    <h3 className="text-2xl font-bold mt-1 text-gray-800 dark:text-pink-100">{item.title}</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">{item.text}</p>
+                                </motion.div>
+                            ))}
+                         </div>
+                    </section>
+
+                    {/* Wishes Section */}
+                    <section className="py-24 px-4">
+                        <div className="max-w-6xl mx-auto">
+                            <h2 className="text-4xl md:text-5xl font-handwritten text-center text-pink-600 mb-16">Mother's Day Cards 💌</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {wishes.map((wish, i) => (
+                                    <WishCard key={i} wish={wish} index={i} />
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-12 text-center glass border-none rounded-none mt-20">
+                        <p className="text-2xl font-handwritten text-pink-600 dark:text-pink-400">
+                            Made with Love for the Best Mom in the World 💖
+                        </p>
+                        <div className="mt-4 flex justify-center gap-4 text-pink-400">
+                            <span>✨</span><span>🧸</span><span>🌸</span><span>🧸</span><span>✨</span>
+                        </div>
+                    </footer>
+
+                    {/* Surprise Popup */}
+                    <AnimatePresence>
+                        {showSurprise && (
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                                onClick={() => setShowSurprise(false)}
+                            >
+                                <motion.div 
+                                    initial={{ scale: 0.8, y: 100 }}
+                                    animate={{ scale: 1, y: 0 }}
+                                    exit={{ scale: 0.8, y: 100 }}
+                                    className="glass p-10 rounded-[3rem] max-w-xl text-center relative"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <button 
+                                        onClick={() => setShowSurprise(false)}
+                                        className="absolute top-6 right-6 text-gray-400 hover:text-pink-500"
+                                    >
+                                        <i data-lucide="x"></i>
+                                    </button>
+                                    <div className="text-6xl mb-6">💖</div>
+                                    <h2 className="text-4xl font-handwritten text-pink-600 mb-6">To My Dearest Mom</h2>
+                                    <p className="text-xl text-gray-700 dark:text-gray-200 leading-relaxed italic mb-8">
+                                        "No matter how old I get, I will always be your little one. Thank you for the countless sacrifices, the endless love, and for being the glue that holds everything together. You are my superhero, my mentor, and my best friend. I love you to the moon and back!"
+                                    </p>
+                                    <div className="text-2xl font-handwritten text-pink-500">Always yours, [Your Name]</div>
+                                    
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => setShowSurprise(false)}
+                                        className="mt-10 px-8 py-3 bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-full border border-pink-200"
+                                    >
+                                        Close with Love
+                                    </motion.button>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        };
+
+        // Initialize Lucide icons
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+        
+        // Wait for React to render then initialize icons
+        setTimeout(() => lucide.createIcons(), 1000);
+    </script>
+</body>
+</html>
